@@ -46,7 +46,6 @@
         .stats span { color: var(--gold); font-weight: bold; }
         #confirm-btn { display: none; background: var(--gold); border: none; padding: 14px 28px; font-weight: bold; border-radius: 8px; margin-top: 10px; cursor: pointer; color: black; font-size: 1rem; z-index: 600; }
         
-        /* Nové stylování informačního bloku (vyjmutého z Gridu) */
         .how-it-works { 
             font-size: 0.85rem; 
             text-align: left; 
@@ -102,13 +101,23 @@
         .btn-cancel { background: #444; color: white; border: none; padding: 12px; border-radius: 5px; flex: 1; cursor: pointer; }
 
         .scroll-container { width: 100vw; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 20px 0; position: relative; z-index: 10; }
-        .main-layout { display: inline-grid; grid-template-columns: 35px var(--p-width) 35px; grid-template-rows: 25px var(--p-height) 25px auto; margin: 0 auto; position: relative; }
         
-        .col-labels { display: grid; grid-template-columns: repeat(27, 1fr); font-size: 10px; font-weight: bold; color: #888; }
-        .row-labels-left { position: sticky; left: 0; z-index: 800; background: #121212; display: grid; grid-template-rows: repeat(19, 1fr); font-size: 11px; font-weight: bold; color: #888; height: var(--p-height); }
+        .main-layout { display: inline-grid; grid-template-columns: 35px var(--p-width) 35px; grid-template-rows: 25px auto var(--p-height) auto; margin: 0 auto; position: relative; }
+        
+        .col-labels { grid-area: 1 / 2 / 2 / 3; display: grid; grid-template-columns: repeat(27, 1fr); font-size: 10px; font-weight: bold; color: #888; }
+        
+        .dugout-row-label { grid-area: 2 / 1 / 3 / 2; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #888; height: calc(var(--p-height) / 19); margin-top: 25px; margin-bottom: 15px; position: sticky; left: 0; background: #121212; z-index: 800; }
+        
+        .dugout-wrapper { grid-area: 2 / 2 / 3 / 3; position: relative; margin-top: 25px; margin-bottom: 15px; height: calc(var(--p-height) / 19); width: 100%; }
+        
+        .row-labels-left { grid-area: 3 / 1 / 4 / 2; position: sticky; left: 0; z-index: 800; background: #121212; display: grid; grid-template-rows: repeat(19, 1fr); font-size: 11px; font-weight: bold; color: #888; height: var(--p-height); }
         .row-labels-left div { display: flex; align-items: center; justify-content: center; }
 
-        .pitch-wrapper { position: relative; background: var(--pitch-green); border: 2px solid white; width: 100%; height: 100%; box-sizing: border-box; overflow: visible; }
+        .pitch-wrapper { grid-area: 3 / 2 / 4 / 3; position: relative; background: var(--pitch-green); border: 2px solid white; width: 100%; height: 100%; box-sizing: border-box; overflow: visible; }
+        
+        /* Upravená legenda: Zarovnání na střed vedle sebe */
+        .pitch-legend { grid-area: 4 / 2 / 5 / 3; justify-self: center; margin-top: 25px; margin-bottom: 25px; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 20px; align-items: center; width: 100%; }
+
         .mid-line-bg::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; background: var(--line-white); transform: translateX(-50%); z-index: 2; pointer-events: none; }
         .pitch-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 161px; height: 161px; background-image: url('https://fkr1928.github.io/fkr-umt-prodej/MAIN-FKR-LOGO.png'); background-size: cover; z-index: 100; pointer-events: none; border-radius: 50%; }
         .center-circle-mark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 161px; height: 161px; border-radius: 50%; border: 3px solid var(--line-white); z-index: 95; pointer-events: none; }
@@ -144,13 +153,12 @@
 
         .sponsor-label { padding: 4px; background-origin: content-box; box-sizing: border-box; position: absolute; display: flex; align-items: center; justify-content: center; z-index: 400; cursor: pointer !important; text-align: center; border: none; pointer-events: auto !important; }
 
-        .dugout-wrapper { grid-column: 2; position: relative; margin-top: 25px; margin-bottom: 10px; height: calc(var(--p-height) / 19); width: 100%; }
         .dugout-grid { display: grid; grid-template-columns: repeat(27, 1fr); height: 100%; width: 100%; position: absolute; top: 0; left: 0; z-index: 10; }
         .dugout-title { position: absolute; top: -18px; font-size: 11px; font-weight: 900; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; pointer-events: none; }
         .dugout-title.home { left: calc((100% / 27) * 15); width: calc((100% / 27) * 4); text-align: center; }
         .dugout-title.away { left: calc((100% / 27) * 8); width: calc((100% / 27) * 4); text-align: center; }
         .sq-empty { pointer-events: none; }
-        .pitch-legend { grid-column: 2; justify-self: end; margin-top: 25px; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+        
         .legend-item { display: flex; align-items: center; gap: 12px; padding: 6px 14px; background: #222; border-radius: 8px; border: 1px solid #444; font-size: 11px; color: #bbb; min-width: 220px; justify-content: space-between; }
         .legend-info { display: flex; align-items: center; gap: 10px; }
         .legend-icon-container { position: relative; width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0; }
@@ -181,7 +189,6 @@
     </div>
 </div>
 
-<!-- INFORMAČNÍ BLOK (Nyní odjíždí při scrollování) -->
 <div class="how-it-works">
     <div class="how-it-works-title">Jak se stát legendou? Je to jednoduché:</div>
     <p><strong>Hrací plocha:</strong> Hřiště jsme rozdělili na čtverce s různými hodnotami. Každý z nich čeká na svého majitele.</p>
@@ -191,7 +198,6 @@
     <div class="how-it-works-link"><a href="https://www.fkreporyje.cz/cs/p/306-legenda-v-kazdem-ctverci" target="_blank">Více informací ZDE.</a></div>
 </div>
 
-<!-- Modal -->
 <div id="sponsor-modal" class="modal-overlay">
     <div class="modal-content">
         <h2>Údaje sponzora</h2>
@@ -217,23 +223,31 @@
 
 <div class="scroll-container">
     <div class="main-layout">
-        <div class="corner"></div><div id="col-labels-top" class="col-labels"></div><div class="corner"></div>
+        <!-- Radek 1 -->
+        <div class="corner" style="grid-area: 1 / 1 / 2 / 2;"></div>
+        <div id="col-labels-top" class="col-labels"></div>
+        <div class="corner" style="grid-area: 1 / 3 / 2 / 4;"></div>
+        
+        <!-- Radek 2: Střídačky (A) -->
+        <div class="dugout-row-label">A</div>
+        <div class="dugout-wrapper" id="dugout-wrapper">
+            <div class="dugout-title away">Hosté</div>
+            <div class="dugout-title home">Domácí</div>
+            <div class="dugout-grid" id="dugout-grid"></div>
+            <div id="dugout-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200;"></div>
+        </div>
+        
+        <!-- Radek 3: Hřiště (B-T) -->
         <div id="row-labels-left" class="row-labels-left"></div>
         <div class="pitch-wrapper">
             <div class="svg-arc-container" style="left: calc(var(--sq-w) * 5 - 2px);"><svg viewBox="0 0 100 200" preserveAspectRatio="none"><path id="arc-merged-l" class="arc-interactive-path" d="M0,0 C60,0 100,50 100,100 C100,150 60,200 0,200 Z" onclick="toggleSelect(this)" data-price="15000"></path></svg><div id="price-l" class="price-tag" style="top: 50%; transform: translateY(-50%); left: 0; position: absolute; pointer-events: none; font-size: 9px; font-weight: bold; color: white; z-index: 140; width: 100%; text-align: center;">15000</div></div>
             <div class="svg-arc-container" style="left: calc(var(--sq-w) * 21 - 2px);"><svg viewBox="0 0 100 200" preserveAspectRatio="none"><path id="arc-merged-r" class="arc-interactive-path" d="M100,0 C40,0 0,50 0,100 C0,150 40,200 100,200 Z" onclick="toggleSelect(this)" data-price="15000"></path></svg><div id="price-r" class="price-tag" style="top: 50%; transform: translateY(-50%); left: 0; position: absolute; pointer-events: none; font-size: 9px; font-weight: bold; color: white; z-index: 140; width: 100%; text-align: center;">15000</div></div>
             <div class="grid-container" id="pitch"></div>
-            <!-- Z-INDEX 200 -->
             <div id="sponsor-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200;"></div>
             <div class="center-circle-mark"></div><div class="pitch-logo"></div><div class="marking penalty-l"></div><div class="marking penalty-r"></div><div class="marking goal-l"></div><div class="marking goal-r"></div>
         </div>
-        <div class="dugout-wrapper" id="dugout-wrapper">
-            <div class="dugout-title away">Hosté</div>
-            <div class="dugout-title home">Domácí</div>
-            <div class="dugout-grid" id="dugout-grid"></div>
-            <!-- Z-INDEX 200 -->
-            <div id="dugout-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200;"></div>
-        </div>
+        
+        <!-- Radek 4: Legenda -->
         <div class="pitch-legend">
             <div class="legend-item"><div class="legend-info"><div class="legend-icon-container" style="background-color: var(--penalty-red);"><div class="legend-dot-core"></div></div><div class="legend-label">Penalta</div></div><div class="legend-price">30 000 Kč</div></div>
             <div class="legend-item"><div class="legend-info"><div class="legend-icon-container" style="background-color: var(--center-dark-green); border: 2px solid var(--line-white); border-radius: 50%;"></div><div class="legend-label">Středový kruh</div></div><div class="legend-price">50 000 Kč</div></div>
@@ -247,9 +261,11 @@
     const grid = document.getElementById('pitch'), overlayContainer = document.getElementById('sponsor-overlays');
     let selectedIds = [];
 
-    // Generování hřiště
+    // Generování čísel sloupců
     for (let c = 1; c <= 27; c++) document.getElementById('col-labels-top').innerHTML += `<div>${c}</div>`;
-    for (let r = 1; r <= 19; r++) document.getElementById('row-labels-left').innerHTML += `<div>${String.fromCharCode(64+r)}</div>`;
+    
+    // Generování písmen pro hřiště (B až T, jelikož A je střídačka - proto +65 místo +64)
+    for (let r = 1; r <= 19; r++) document.getElementById('row-labels-left').innerHTML += `<div>${String.fromCharCode(65+r)}</div>`;
 
     for (let r = 1; r <= 19; r++) {
         for (let c = 1; c <= 27; c++) {
@@ -306,8 +322,9 @@
         if (id.startsWith('arc')) return "D-oblouk";
         if (id.startsWith('rX')) { const c = parseInt(id.match(/\d+/)[0]); return `Střídačka ${c >= 16 ? 'Domácí' : 'Hosté'} č. ${c}`; }
         let suffix = id.includes('_T') ? ' (h)' : id.includes('_B') ? ' (d)' : '';
-        if (id.startsWith('comb')) { const m = id.match(/\d+/g); return String.fromCharCode(64+parseInt(m[0]))+m[1]; }
-        const p = id.match(/\d+/g); return p ? String.fromCharCode(64+parseInt(p[0]))+p[1] + suffix : id;
+        // Abeceda je posunutá o jedno písmeno, používáme 65 místo 64
+        if (id.startsWith('comb')) { const m = id.match(/\d+/g); return String.fromCharCode(65+parseInt(m[0]))+m[1]; }
+        const p = id.match(/\d+/g); return p ? String.fromCharCode(65+parseInt(p[0]))+p[1] + suffix : id;
     }
 
     function toggleSaveButton() { document.getElementById('btn-save-final').disabled = !document.getElementById('sponsor-gdpr').checked; }
@@ -524,4 +541,4 @@
     window.onload = load;
 </script>
 </body>
-</html>
+</html>13:34 05.05.2026
