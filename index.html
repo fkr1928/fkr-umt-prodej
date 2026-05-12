@@ -92,7 +92,7 @@
         .modal-content { background: #1e1e1e; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid #444; text-align: left; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; }
-        .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="file"] { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
+        .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="tel"], .form-group input[type="file"] { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
         .checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin-top: 20px; font-size: 0.85rem; color: #bbb; cursor: pointer; }
         .checkbox-group input { width: 18px; height: 18px; cursor: pointer; margin-top: 2px; }
         .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
@@ -115,7 +115,6 @@
 
         .pitch-wrapper { grid-area: 3 / 2 / 4 / 3; position: relative; background: var(--pitch-green); border: 2px solid white; width: 100%; height: 100%; box-sizing: border-box; overflow: visible; }
         
-        /* Upravená legenda: Zarovnání na střed vedle sebe */
         .pitch-legend { grid-area: 4 / 2 / 5 / 3; justify-self: center; margin-top: 25px; margin-bottom: 25px; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 20px; align-items: center; width: 100%; }
 
         .mid-line-bg::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; background: var(--line-white); transform: translateX(-50%); z-index: 2; pointer-events: none; }
@@ -151,7 +150,7 @@
         .arc-interactive-path { fill: var(--large-box-blue); stroke: var(--line-white); stroke-width: 3; cursor: pointer; transition: fill 0.2s; }
         .arc-interactive-path.selected { fill: var(--selected-yellow) !important; }
 
-        .sponsor-label { padding: 4px; background-origin: content-box; box-sizing: border-box; position: absolute; display: flex; align-items: center; justify-content: center; z-index: 400; cursor: pointer !important; text-align: center; border: none; pointer-events: auto !important; }
+        .sponsor-label { padding: 4px; background-origin: content-box; box-sizing: border-box; position: absolute; display: flex; align-items: center; justify-content: center; z-index: 400; cursor: default !important; text-align: center; border: none; pointer-events: auto !important; }
 
         .dugout-grid { display: grid; grid-template-columns: repeat(27, 1fr); height: 100%; width: 100%; position: absolute; top: 0; left: 0; z-index: 10; }
         .dugout-title { position: absolute; top: -18px; font-size: 11px; font-weight: 900; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; pointer-events: none; }
@@ -210,6 +209,10 @@
             <input type="email" id="sponsor-email" placeholder="Zadejte e-mail pro komunikaci" required>
         </div>
         <div class="form-group">
+            <label>Telefon (nepovinný)</label>
+            <input type="tel" id="sponsor-phone" placeholder="Zadejte telefonní číslo">
+        </div>
+        <div class="form-group">
             <label>Nahrát logo</label>
             <input type="file" id="sponsor-logo-input" accept="image/*">
         </div>
@@ -223,12 +226,10 @@
 
 <div class="scroll-container">
     <div class="main-layout">
-        <!-- Radek 1 -->
         <div class="corner" style="grid-area: 1 / 1 / 2 / 2;"></div>
         <div id="col-labels-top" class="col-labels"></div>
         <div class="corner" style="grid-area: 1 / 3 / 2 / 4;"></div>
         
-        <!-- Radek 2: Střídačky (A) -->
         <div class="dugout-row-label">A</div>
         <div class="dugout-wrapper" id="dugout-wrapper">
             <div class="dugout-title away">Domácí</div>
@@ -237,7 +238,6 @@
             <div id="dugout-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200;"></div>
         </div>
         
-        <!-- Radek 3: Hřiště (B-T) -->
         <div id="row-labels-left" class="row-labels-left"></div>
         <div class="pitch-wrapper">
             <div class="svg-arc-container" style="left: calc(var(--sq-w) * 5 - 2px);"><svg viewBox="0 0 100 200" preserveAspectRatio="none"><path id="arc-merged-l" class="arc-interactive-path" d="M0,0 C60,0 100,50 100,100 C100,150 60,200 0,200 Z" onclick="toggleSelect(this)" data-price="15000"></path></svg><div id="price-l" class="price-tag" style="top: 50%; transform: translateY(-50%); left: 0; position: absolute; pointer-events: none; font-size: 9px; font-weight: bold; color: white; z-index: 140; width: 100%; text-align: center;">15000</div></div>
@@ -247,7 +247,6 @@
             <div class="center-circle-mark"></div><div class="pitch-logo"></div><div class="marking penalty-l"></div><div class="marking penalty-r"></div><div class="marking goal-l"></div><div class="marking goal-r"></div>
         </div>
         
-        <!-- Radek 4: Legenda -->
         <div class="pitch-legend">
             <div class="legend-item"><div class="legend-info"><div class="legend-icon-container" style="background-color: var(--penalty-red);"><div class="legend-dot-core"></div></div><div class="legend-label">Penalta</div></div><div class="legend-price">30 000 Kč</div></div>
             <div class="legend-item"><div class="legend-info"><div class="legend-icon-container" style="background-color: var(--center-dark-green); border: 2px solid var(--line-white); border-radius: 50%;"></div><div class="legend-label">Středový kruh</div></div><div class="legend-price">50 000 Kč</div></div>
@@ -256,7 +255,7 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzsllJRN9szJvcbO9qjC_vC2EUtYD16CqYZnwDqNw74pZSeyYCmzc62GXngiUfNV3gD/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwc2Ikv94OdKFoJj9pWyqR-RYktIGF0r8kiWPH7Ioj40Tn-SSkA34Hr_K4fH0Duobp-/exec";
     
     const grid = document.getElementById('pitch'), overlayContainer = document.getElementById('sponsor-overlays');
     let selectedIds = [];
@@ -334,6 +333,7 @@
     async function handleSponsorSubmit() {
         const name = document.getElementById('sponsor-name').value.trim();
         const email = document.getElementById('sponsor-email').value.trim();
+        const phone = document.getElementById('sponsor-phone').value.trim();
         const fileInput = document.getElementById('sponsor-logo-input');
         if (!name || !email || !email.includes('@')) return alert("Vyplňte prosím platné jméno a e-mail.");
         
@@ -346,18 +346,18 @@
         document.getElementById('loading-overlay').style.display = 'flex';
         if (fileInput.files[0]) { 
             const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]); 
-            reader.onload = async () => { await sendToCloud(name, email, reader.result, totalPrice); }; 
-        } else { await sendToCloud(name, email, "", totalPrice); }
+            reader.onload = async () => { await sendToCloud(name, email, phone, reader.result, totalPrice); }; 
+        } else { await sendToCloud(name, email, phone, "", totalPrice); }
     }
 
-    async function sendToCloud(name, email, base64, price) {
+    async function sendToCloud(name, email, phone, base64, price) {
         try {
             const humanCoords = selectedIds.map(id => convertToHumanCoords(id)).join(", ");
             await fetch(SCRIPT_URL, { 
                 method: "POST", mode: "no-cors", 
                 body: JSON.stringify({ 
                     action: "add", 
-                    data: { id: Date.now(), content: name, email: email, logo: base64, ids: [...selectedIds], humanIds: humanCoords, price: price }
+                    data: { id: Date.now(), content: name, email: email, phone: phone, logo: base64, ids: [...selectedIds], humanIds: humanCoords, price: price }
                 })
             });
             setTimeout(() => location.reload(), 1500);
@@ -407,15 +407,7 @@
                     
                     lbl.style.top = ((r1-1)*(100/19))+"%"; lbl.style.left = ((c1-1)*(100/27))+"%";
                     lbl.style.width = ((c2-c1+1)*(100/27))+"%"; lbl.style.height = ((r2-r1+1)*(100/19))+"%";
-                    lbl.onclick = (e) => { 
-                        e.stopPropagation(); 
-                        if(confirm("Smazat " + g.content + "?")) { 
-                            const loader = document.getElementById('loading-overlay');
-                            loader.innerText = "Mažu data..."; loader.style.display = 'flex';
-                            fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "remove", id: g.id }) }); 
-                            setTimeout(() => location.reload(), 1500); 
-                        }
-                    };
+                    
                     overlayContainer.appendChild(lbl);
 
                     if (!g.logo || !g.logo.startsWith("data:image")) {
@@ -464,15 +456,7 @@
                     
                     lbl.style.top = "0%"; lbl.style.left = ((c1-1)*(100/27))+"%";
                     lbl.style.width = ((c2-c1+1)*(100/27))+"%"; lbl.style.height = "100%";
-                    lbl.onclick = (e) => { 
-                        e.stopPropagation(); 
-                        if(confirm("Smazat " + g.content + "?")) { 
-                            const loader = document.getElementById('loading-overlay');
-                            loader.innerText = "Mažu data..."; loader.style.display = 'flex';
-                            fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: "remove", id: g.id }) }); 
-                            setTimeout(() => location.reload(), 1500); 
-                        }
-                    };
+                    
                     document.getElementById('dugout-overlays').appendChild(lbl);
 
                     if (!g.logo || !g.logo.startsWith("data:image")) {
