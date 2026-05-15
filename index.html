@@ -243,7 +243,7 @@
             <div class="svg-arc-container" style="left: calc(var(--sq-w) * 5 - 2px);"><svg viewBox="0 0 100 200" preserveAspectRatio="none"><path id="arc-merged-l" class="arc-interactive-path" d="M0,0 C60,0 100,50 100,100 C100,150 60,200 0,200 Z" onclick="toggleSelect(this)" data-price="15000"></path></svg><div id="price-l" class="price-tag" style="top: 50%; transform: translateY(-50%); left: 0; position: absolute; pointer-events: none; font-size: 9px; font-weight: bold; color: white; z-index: 140; width: 100%; text-align: center;">15000</div></div>
             <div class="svg-arc-container" style="left: calc(var(--sq-w) * 21 - 2px);"><svg viewBox="0 0 100 200" preserveAspectRatio="none"><path id="arc-merged-r" class="arc-interactive-path" d="M100,0 C40,0 0,50 0,100 C0,150 40,200 100,200 Z" onclick="toggleSelect(this)" data-price="15000"></path></svg><div id="price-r" class="price-tag" style="top: 50%; transform: translateY(-50%); left: 0; position: absolute; pointer-events: none; font-size: 9px; font-weight: bold; color: white; z-index: 140; width: 100%; text-align: center;">15000</div></div>
             <div class="grid-container" id="pitch"></div>
-            <div id="sponsor-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200;"></div>
+            <div id="sponsor-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
             <div class="center-circle-mark"></div><div class="pitch-logo"></div><div class="marking penalty-l"></div><div class="marking penalty-r"></div><div class="marking goal-l"></div><div class="marking goal-r"></div>
         </div>
         
@@ -272,8 +272,10 @@
             if (isArcL || isArcR || isCenterBody || isCenterStep) {
                 const sq = document.createElement('div');
                 let specialAlign = "";
-                if ((r === 8 || r === 12) && (c === 12 || c === 15)) { 
-                    if (c === 12) specialAlign = " align-left"; if (c === 15) specialAlign = " align-right";
+                // Zarovnání pro prázdná pole - VČETNĚ SPRÁVNÉHO ODSUNUTÍ U OBLOUKŮ
+                if ((r === 8 || r === 12) && (c === 6 || c === 12 || c === 15 || c === 21)) { 
+                    if (c === 12 || c === 21) specialAlign = " align-left"; 
+                    if (c === 6 || c === 15) specialAlign = " align-right";
                 }
                 sq.className = `square combined-cell${specialAlign}`; sq.id = `comb-r${r}c${c}-${c+1}`; sq.dataset.price = 3000; sq.innerHTML = `<span class="price-tag">3000</span>`; sq.onclick = () => toggleSelect(sq); grid.appendChild(sq); c++; continue;
             }
@@ -372,24 +374,68 @@
             if (pitchIds.length > 0) {
                 const els = pitchIds.map(id => document.getElementById(id)).filter(e => e); 
                 if(els.length) {
-                    let r1=20, r2=0, c1=28, c2=0;
+                    
+                    let minT = 100, maxB = 0, minL = 100, maxR = 0;
                     els.forEach(el => {
-                        let r, c, w=1, h=1; const pureId = el.id.split('_')[0];
+                        let r, c, w=1, h=1; 
+                        const parts = el.id.split('_');
+                        const pureId = parts[0];
+                        const side = parts[1];
+                        
                         if (pureId.startsWith('comb')) { const m = pureId.match(/\d+/g); r=parseInt(m[0]); c=parseInt(m[1]); w=2; }
                         else if (pureId.startsWith('r')) { const m = pureId.match(/\d+/g); r=parseInt(m[0]); c=parseInt(m[1]); }
                         else { r=8; h=5; c=pureId.includes('-l')?6:22; }
-                        if(r<r1)r1=r; if(r+h-1>r2)r2=r+h-1; if(c<c1)c1=c; if(c+w-1>c2)c2=c+w-1;
+                        
+                        let tF = (r - 1) * (100 / 19);
+                        let bF = (r - 1 + h) * (100 / 19);
+                        let lF = (c - 1) * (100 / 27);
+                        let rF = (c - 1 + w) * (100 / 27);
+                        
+                        if (side === 'T') bF = tF + (100 / 19) / 2;
+                        if (side === 'B') tF = tF + (100 / 19) / 2;
+                        
+                        if (tF < minT) minT = tF;
+                        if (bF > maxB) maxB = bF;
+                        if (lF < minL) minL = lF;
+                        if (rF > maxR) maxR = rF;
                     });
                     
                     const firstEl = els[0];
                     const isArc = firstEl.id.startsWith('arc'); 
 
+                    // KONTROLA KOLIZE S OBLOUKY (POUZE PRO NE-OBLOUKOVÁ POLE)
+                    let isLeftArcAdjacent = false;
+                    let isRightArcAdjacent = false;
+                    
+                    if (!isArc) {
+                        isLeftArcAdjacent = els.some(e => e.id === 'comb-r8c6-7' || e.id === 'comb-r12c6-7');
+                        isRightArcAdjacent = els.some(e => e.id === 'comb-r8c21-22' || e.id === 'comb-r12c21-22');
+                    }
+
+                    // VÝCHOZÍ ZAROVNÁNÍ NA STŘED
+                    let svgAlign = "xMidYMid";
+                    let imgAlign = "center";
+                    
+                    // ZAROVNÁNÍ TEXTU/LOGA K BEZPEČNÉ STRANĚ (Pokud je koupeno jen toto jedno pole)
+                    if (isLeftArcAdjacent && els.length === 1) {
+                        svgAlign = "xMaxYMid"; // Zarovná text doprava
+                        imgAlign = "right";    // Zarovná logo doprava
+                    } else if (isRightArcAdjacent && els.length === 1) {
+                        svgAlign = "xMinYMid"; // Zarovná text doleva
+                        imgAlign = "left";     // Zarovná logo doleva
+                    }
+
                     const lbl = document.createElement('div'); lbl.className = 'sponsor-label';
+                    
+                    // SNÍŽENÍ Z-INDEXU TAK, ABY ZAJEL POD OBLOUK
+                    if (isLeftArcAdjacent || isRightArcAdjacent) {
+                        lbl.style.zIndex = "110";
+                    }
                     
                     lbl.style.background = isArc ? "transparent" : "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
                     
                     if (g.logo && g.logo.startsWith("data:image")) { 
-                        lbl.innerHTML = `<img src="${g.logo}" style="max-width:100%; max-height:100%; object-fit:contain; pointer-events:none;">`;
+                        lbl.innerHTML = `<img src="${g.logo}" style="max-width:100%; max-height:100%; object-fit:contain; object-position:${imgAlign}; pointer-events:none;">`;
                     } else { 
                         const words = g.content.trim().split(/\s+/);
                         let tspans = '';
@@ -397,7 +443,7 @@
                             tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
                         });
                         lbl.innerHTML = `
-                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:visible;">
+                            <svg width="100%" height="100%" preserveAspectRatio="${svgAlign} meet" style="overflow:visible;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
                                     ${tspans}
                                 </text>
@@ -405,8 +451,10 @@
                         `;
                     }
                     
-                    lbl.style.top = ((r1-1)*(100/19))+"%"; lbl.style.left = ((c1-1)*(100/27))+"%";
-                    lbl.style.width = ((c2-c1+1)*(100/27))+"%"; lbl.style.height = ((r2-r1+1)*(100/19))+"%";
+                    lbl.style.top = minT + "%";
+                    lbl.style.left = minL + "%";
+                    lbl.style.width = (maxR - minL) + "%";
+                    lbl.style.height = (maxB - minT) + "%";
                     
                     overlayContainer.appendChild(lbl);
 
