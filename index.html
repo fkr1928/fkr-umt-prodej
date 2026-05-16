@@ -272,7 +272,6 @@
             if (isArcL || isArcR || isCenterBody || isCenterStep) {
                 const sq = document.createElement('div');
                 let specialAlign = "";
-                // Zarovnání pro prázdná pole - VČETNĚ SPRÁVNÉHO ODSUNUTÍ U OBLOUKŮ
                 if ((r === 8 || r === 12) && (c === 6 || c === 12 || c === 15 || c === 21)) { 
                     if (c === 12 || c === 21) specialAlign = " align-left"; 
                     if (c === 6 || c === 15) specialAlign = " align-right";
@@ -323,7 +322,6 @@
         if (id.startsWith('arc')) return "D-oblouk";
         if (id.startsWith('rX')) { const c = parseInt(id.match(/\d+/)[0]); return `Střídačka ${c >= 16 ? 'Domácí' : 'Hosté'} č. ${c}`; }
         let suffix = id.includes('_T') ? ' (h)' : id.includes('_B') ? ' (d)' : '';
-        // Abeceda je posunutá o jedno písmeno, používáme 65 místo 64
         if (id.startsWith('comb')) { const m = id.match(/\d+/g); return String.fromCharCode(65+parseInt(m[0]))+m[1]; }
         const p = id.match(/\d+/g); return p ? String.fromCharCode(65+parseInt(p[0]))+p[1] + suffix : id;
     }
@@ -403,7 +401,6 @@
                     const firstEl = els[0];
                     const isArc = firstEl.id.startsWith('arc'); 
 
-                    // KONTROLA KOLIZE S OBLOUKY (POUZE PRO NE-OBLOUKOVÁ POLE)
                     let isLeftArcAdjacent = false;
                     let isRightArcAdjacent = false;
                     
@@ -412,22 +409,19 @@
                         isRightArcAdjacent = els.some(e => e.id === 'comb-r8c21-22' || e.id === 'comb-r12c21-22');
                     }
 
-                    // VÝCHOZÍ ZAROVNÁNÍ NA STŘED
                     let svgAlign = "xMidYMid";
                     let imgAlign = "center";
                     
-                    // ZAROVNÁNÍ TEXTU/LOGA K BEZPEČNÉ STRANĚ (Pokud je koupeno jen toto jedno pole)
                     if (isLeftArcAdjacent && els.length === 1) {
-                        svgAlign = "xMaxYMid"; // Zarovná text doprava
-                        imgAlign = "right";    // Zarovná logo doprava
+                        svgAlign = "xMaxYMid"; 
+                        imgAlign = "right";    
                     } else if (isRightArcAdjacent && els.length === 1) {
-                        svgAlign = "xMinYMid"; // Zarovná text doleva
-                        imgAlign = "left";     // Zarovná logo doleva
+                        svgAlign = "xMinYMid"; 
+                        imgAlign = "left";     
                     }
 
                     const lbl = document.createElement('div'); lbl.className = 'sponsor-label';
                     
-                    // SNÍŽENÍ Z-INDEXU TAK, ABY ZAJEL POD OBLOUK
                     if (isLeftArcAdjacent || isRightArcAdjacent) {
                         lbl.style.zIndex = "110";
                     }
@@ -437,11 +431,17 @@
                     if (g.logo && g.logo.startsWith("data:image")) { 
                         lbl.innerHTML = `<img src="${g.logo}" style="max-width:100%; max-height:100%; object-fit:contain; object-position:${imgAlign}; pointer-events:none;">`;
                     } else { 
-                        const words = g.content.trim().split(/\s+/);
                         let tspans = '';
-                        words.forEach((w, i) => {
-                            tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
-                        });
+                        // CHYTRÁ KONTROLA: Pokud je štítek širší než vyšší (nudle), nedáváme slova pod sebe
+                        if ((maxR - minL) > (maxB - minT) * 1.1) {
+                            tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
+                        } else {
+                            const words = g.content.trim().split(/\s+/);
+                            words.forEach((w, i) => {
+                                tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
+                            });
+                        }
+                        
                         lbl.innerHTML = `
                             <svg width="100%" height="100%" preserveAspectRatio="${svgAlign} meet" style="overflow:visible;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
@@ -488,11 +488,17 @@
                     if (g.logo && g.logo.startsWith("data:image")) { 
                         lbl.innerHTML = `<img src="${g.logo}" style="max-width:100%; max-height:100%; object-fit:contain; pointer-events:none;">`;
                     } else { 
-                        const words = g.content.trim().split(/\s+/);
                         let tspans = '';
-                        words.forEach((w, i) => {
-                            tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
-                        });
+                        // Kontrola pro střídačky, pokud se koupí více míst vedle sebe
+                        if (((c2 - c1 + 1) * (100 / 27)) > (100 / 19) * 1.1) {
+                            tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
+                        } else {
+                            const words = g.content.trim().split(/\s+/);
+                            words.forEach((w, i) => {
+                                tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
+                            });
+                        }
+                        
                         lbl.innerHTML = `
                             <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:visible;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="20">
