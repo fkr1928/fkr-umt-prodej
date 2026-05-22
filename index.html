@@ -350,19 +350,38 @@
         } else { await sendToCloud(name, email, phone, "", totalPrice); }
     }
 
-    async function sendToCloud(name, email, phone, base64, price) {
-        try {
-            const humanCoords = selectedIds.map(id => convertToHumanCoords(id)).join(", ");
-            await fetch(SCRIPT_URL, { 
-                method: "POST", mode: "no-cors", 
-                body: JSON.stringify({ 
-                    action: "add", 
-                    data: { id: Date.now(), content: name, email: email, phone: phone, logo: base64, ids: [...selectedIds], humanIds: humanCoords, price: price }
-                })
-            });
-            setTimeout(() => location.reload(), 1500);
-        } catch (e) { alert("Chyba."); document.getElementById('loading-overlay').style.display = 'none'; }
+   async function sendToCloud(name, email, phone, base64, price) {
+    try {
+        const humanCoords = selectedIds.map(id => convertToHumanCoords(id)).join(", ");
+        await fetch(SCRIPT_URL, { 
+            method: "POST", mode: "no-cors", 
+            body: JSON.stringify({ 
+                action: "add", 
+                data: { id: Date.now(), content: name, email: email, phone: phone, logo: base64, ids: [...selectedIds], humanIds: humanCoords, price: price }
+            })
+        });
+
+        // Zobraz zprávu místo přímého reloadu
+        document.getElementById('loading-overlay').innerHTML = `
+            <div style="text-align: center; padding: 30px; max-width: 420px;">
+                <div style="font-size: 3rem; margin-bottom: 16px;">⚽</div>
+                <div style="font-size: 1.4rem; font-weight: 900; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">
+                    Děkujeme, ${name}!
+                </div>
+                <div style="font-size: 1rem; color: white; line-height: 1.6; margin-bottom: 24px;">
+                    Vaše rezervace byla úspěšně přijata.<br>
+                    Brzy vás budeme kontaktovat z&nbsp;<strong>FK&nbsp;Řeporyje</strong> na adresu <strong>${email}</strong> s dalšími pokyny k platbě a darovací smlouvě.
+                </div>
+                <div style="font-size: 0.85rem; color: #aaa;">Stránka se za chvíli obnoví…</div>
+            </div>
+        `;
+
+        setTimeout(() => location.reload(), 4000);
+    } catch (e) { 
+        alert("Chyba při odesílání. Zkuste to prosím znovu."); 
+        document.getElementById('loading-overlay').style.display = 'none'; 
     }
+}
 
     function renderGroup(g) {
         try {
