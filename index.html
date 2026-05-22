@@ -478,7 +478,8 @@
                             'comb-r8c15-16':  8,
                             'comb-r12c15-16': 12,
                         };
-                        
+                            console.log("els[0].id:", els[0]?.id);
+                            console.log("overrideRow:", centerOverrideMap[els[0]?.id]);
                         const overrideRow = els.length === 1 && centerOverrideMap[els[0].id] !== undefined
                             ? centerOverrideMap[els[0].id]
                             : null;
