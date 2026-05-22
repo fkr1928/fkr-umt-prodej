@@ -470,10 +470,31 @@
                         `;
                     }
                     
-                    lbl.style.top = minT + "%";
-                    lbl.style.left = minL + "%";
-                    lbl.style.width = (maxR - minL) + "%";
-                    lbl.style.height = (maxB - minT) + "%";
+                         // Mapa spojených čtverců kolem středového kruhu → řádek pro zobrazení labelu
+                        const centerOverrideMap = {
+                            'comb-r8c12-13':  8,   // I8  - nad kruhem, zobraz v řádku 8
+                            'comb-r12c12-13': 12,  // I13 - pod kruhem, zobraz v řádku 12
+                            'comb-r8c15-16':  8,
+                            'comb-r12c15-16': 12,
+                        };
+                        
+                        const overrideRow = els.length === 1 && centerOverrideMap[els[0].id] !== undefined
+                            ? centerOverrideMap[els[0].id]
+                            : null;
+                        
+                        if (overrideRow !== null) {
+                            const rowTop = (overrideRow - 1) * (100 / 19);
+                            const rowBot = overrideRow * (100 / 19);
+                            lbl.style.top = rowTop + "%";
+                            lbl.style.left = minL + "%";
+                            lbl.style.width = (maxR - minL) + "%";
+                            lbl.style.height = (rowBot - rowTop) + "%";
+                        } else {
+                            lbl.style.top = minT + "%";
+                            lbl.style.left = minL + "%";
+                            lbl.style.width = (maxR - minL) + "%";
+                            lbl.style.height = (maxB - minT) + "%";
+                        }
                     
                     overlayContainer.appendChild(lbl);
 
