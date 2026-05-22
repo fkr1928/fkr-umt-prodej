@@ -387,6 +387,7 @@
         try {
             const pitchIds = g.ids.filter(id => !id.startsWith('rX'));
             const dugoutIds = g.ids.filter(id => id.startsWith('rX'));
+            console.log("IDs v této skupině:", pitchIds); // ← přidej tento řádek
 
             if (pitchIds.length > 0) {
                 const els = pitchIds.map(id => document.getElementById(id)).filter(e => e); 
