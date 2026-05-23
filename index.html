@@ -18,23 +18,11 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #121212; color: white; text-align: center; margin: 0; padding: 0; overflow-x: hidden; }
         
         .header-sticky { 
-            position: sticky; 
-            top: 0; 
-            z-index: 2000; 
-            background: #121212; 
-            padding: 15px 5px; 
-            border-bottom: 2px solid var(--gold); 
-            display: grid; 
-            grid-template-columns: 100px 1fr 100px; 
-            grid-template-areas: 
-                "logo-l text logo-r"
-                "logo-l stats logo-r";
-            align-items: center; 
-            gap: 10px; 
+            position: sticky; top: 0; z-index: 2000; background: #121212; padding: 15px 5px; border-bottom: 2px solid var(--gold); display: grid; 
+            grid-template-columns: 100px 1fr 100px; grid-template-areas: "logo-l text logo-r" "logo-l stats logo-r"; align-items: center; gap: 10px; 
         }
         .header-logo-left { grid-area: logo-l; height: 60px; width: auto; object-fit: contain; justify-self: start; margin-left: 20px; align-self: center; transform: translateY(-5px); }
         .header-logo-right { grid-area: logo-r; height: 60px; width: auto; object-fit: contain; justify-self: end; margin-right: 20px; align-self: center; transform: translateY(-5px); }
-        
         .header-text { grid-area: text; display: flex; flex-direction: column; align-items: center; text-align: center; }
         .header-stats { grid-area: stats; display: flex; flex-direction: column; align-items: center; }
         
@@ -46,20 +34,7 @@
         .stats span { color: var(--gold); font-weight: bold; }
         #confirm-btn { display: none; background: var(--gold); border: none; padding: 14px 28px; font-weight: bold; border-radius: 8px; margin-top: 10px; cursor: pointer; color: black; font-size: 1rem; z-index: 600; }
         
-        .how-it-works { 
-            font-size: 0.85rem; 
-            text-align: left; 
-            color: #ccc; 
-            margin: 15px auto 10px auto; 
-            width: 92%;
-            max-width: 900px; 
-            line-height: 1.4; 
-            background: #1e1e1e; 
-            padding: 15px 20px; 
-            border-radius: 8px; 
-            border: 1px solid #333; 
-            box-sizing: border-box;
-        }
+        .how-it-works { font-size: 0.85rem; text-align: left; color: #ccc; margin: 15px auto 10px auto; width: 92%; max-width: 900px; line-height: 1.4; background: #1e1e1e; padding: 15px 20px; border-radius: 8px; border: 1px solid #333; box-sizing: border-box; }
         .how-it-works strong { color: var(--gold); font-weight: bold; }
         .how-it-works a { color: white; text-decoration: underline; font-weight: bold; }
         .how-it-works a:hover { color: var(--gold); }
@@ -68,24 +43,11 @@
         .how-it-works-link { text-align: center; margin-top: 10px; }
 
         @media (max-width: 768px) {
-            .header-sticky { 
-                grid-template-columns: 1fr 1fr; 
-                grid-template-areas: 
-                    "text text"
-                    "logo-l logo-r"
-                    "stats stats";
-                padding: 12px 10px; 
-                gap: 12px 10px;
-            }
-            .header-logo-left { justify-self: center; margin: 0; height: 50px; transform: none; }
-            .header-logo-right { justify-self: center; margin: 0; height: 50px; transform: none; }
+            .header-sticky { grid-template-columns: 1fr 1fr; grid-template-areas: "text text" "logo-l logo-r" "stats stats"; padding: 12px 10px; gap: 12px 10px; }
+            .header-logo-left, .header-logo-right { justify-self: center; margin: 0; height: 50px; transform: none; }
             .main-title { font-size: 1.4rem; }
-            .sub-title { font-size: 1rem; margin: 3px 0; }
-            .action-title { font-size: 0.85rem; margin-bottom: 0; }
             .stats { width: 100%; box-sizing: border-box; justify-content: space-around; gap: 10px; font-size: 0.85rem; padding: 10px 15px; }
             .how-it-works { font-size: 0.75rem; padding: 12px; margin-top: 15px; width: 95%; }
-            .how-it-works-title { font-size: 0.85rem; margin-bottom: 6px; }
-            .how-it-works p { margin: 4px 0; }
         }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
@@ -101,22 +63,14 @@
         .btn-cancel { background: #444; color: white; border: none; padding: 12px; border-radius: 5px; flex: 1; cursor: pointer; }
 
         .scroll-container { width: 100vw; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 20px 0; position: relative; z-index: 10; }
-        
         .main-layout { display: inline-grid; grid-template-columns: 35px var(--p-width) 35px; grid-template-rows: 25px auto var(--p-height) auto; margin: 0 auto; position: relative; }
-        
         .col-labels { grid-area: 1 / 2 / 2 / 3; display: grid; grid-template-columns: repeat(27, 1fr); font-size: 10px; font-weight: bold; color: #888; }
-        
         .dugout-row-label { grid-area: 2 / 1 / 3 / 2; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #888; height: calc(var(--p-height) / 19); margin-top: 25px; margin-bottom: 15px; position: sticky; left: 0; background: #121212; z-index: 800; }
-        
         .dugout-wrapper { grid-area: 2 / 2 / 3 / 3; position: relative; margin-top: 25px; margin-bottom: 15px; height: calc(var(--p-height) / 19); width: 100%; }
-        
         .row-labels-left { grid-area: 3 / 1 / 4 / 2; position: sticky; left: 0; z-index: 800; background: #121212; display: grid; grid-template-rows: repeat(19, 1fr); font-size: 11px; font-weight: bold; color: #888; height: var(--p-height); }
         .row-labels-left div { display: flex; align-items: center; justify-content: center; }
-
         .pitch-wrapper { grid-area: 3 / 2 / 4 / 3; position: relative; background: var(--pitch-green); border: 2px solid white; width: 100%; height: 100%; box-sizing: border-box; overflow: visible; }
-        
         .pitch-legend { grid-area: 4 / 2 / 5 / 3; justify-self: center; margin-top: 25px; margin-bottom: 25px; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 20px; align-items: center; width: 100%; }
-
         .mid-line-bg::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; background: var(--line-white); transform: translateX(-50%); z-index: 2; pointer-events: none; }
         .pitch-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 161px; height: 161px; background-image: url('https://fkr1928.github.io/fkr-umt-prodej/MAIN-FKR-LOGO.png'); background-size: cover; z-index: 460; pointer-events: none; border-radius: 50%; }
         .center-circle-mark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 161px; height: 161px; border-radius: 50%; border: 3px solid var(--line-white); z-index: 450; pointer-events: none; }
@@ -124,9 +78,6 @@
         .grid-container { display: grid; grid-template-columns: repeat(27, 1fr); grid-template-rows: repeat(19, 1fr); width: 100%; height: 100%; position: relative; z-index: 10; }
         .square { border: 0.1px solid rgba(255,255,255,0.08); position: relative; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; cursor: pointer; box-sizing: border-box; }
         .price-tag { position: relative; z-index: 20; padding: 2px 4px; border-radius: 2px; text-shadow: 1px 1px 7px rgba(0,0,0,0.8); pointer-events: none; }
-        
-        .half-sq-hor { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 7px; cursor: pointer; z-index: 25; border-bottom: 0.1px solid rgba(255,255,255,0.05); }
-        .half-sq-hor:last-child { border-bottom: none; }
         .combined-cell { grid-column: span 2; background-color: var(--center-dark-green) !important; z-index: 30; display: flex; align-items: center; justify-content: center; position: relative; }
         .align-left { justify-content: flex-start !important; padding-left: 5px; }
         .align-right { justify-content: flex-end !important; padding-right: 5px; }
@@ -145,7 +96,7 @@
         .goal-l { top: 36.84%; left: 0; width: calc(2 * 100% / 27); height: 26.32%; border-left: none; }
         .goal-r { top: 36.84%; right: 0; width: calc(2 * 100% / 27); height: 26.32%; border-right: none; }
         
-        .svg-arc-container { position: absolute; top: calc(var(--cell-h) * 7); width: var(--sq-w); height: calc(var(--cell-h) * 5); z-index: 410; }
+        .svg-arc-container { position: absolute; top: calc(var(--cell-h) * 7); width: var(--sq-w); height: calc(var(--cell-h) * 5); z-index: 120; }
         .svg-arc-container svg { width: 100%; height: 100%; overflow: visible; }
         .arc-interactive-path { fill: var(--large-box-blue); stroke: var(--line-white); stroke-width: 3; cursor: pointer; transition: fill 0.2s; }
         .arc-interactive-path.selected { fill: var(--selected-yellow) !important; }
@@ -240,6 +191,15 @@
         
         <div id="row-labels-left" class="row-labels-left"></div>
         <div class="pitch-wrapper">
+            <svg width="0" height="0" style="position: absolute;" aria-hidden="true">
+                <defs>
+                    <linearGradient id="sold-arc-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="var(--center-dark-green)" />
+                        <stop offset="100%" stop-color="var(--pitch-green)" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
             <div class="svg-arc-container" style="left: calc(var(--sq-w) * 5 - 2px);"><svg viewBox="0 0 100 200" preserveAspectRatio="none"><path id="arc-merged-l" class="arc-interactive-path" d="M0,0 C60,0 100,50 100,100 C100,150 60,200 0,200 Z" onclick="toggleSelect(this)" data-price="15000"></path></svg><div id="price-l" class="price-tag" style="top: 50%; transform: translateY(-50%); left: 0; position: absolute; pointer-events: none; font-size: 9px; font-weight: bold; color: white; z-index: 140; width: 100%; text-align: center;">15000</div></div>
             <div class="svg-arc-container" style="left: calc(var(--sq-w) * 21 - 2px);"><svg viewBox="0 0 100 200" preserveAspectRatio="none"><path id="arc-merged-r" class="arc-interactive-path" d="M100,0 C40,0 0,50 0,100 C0,150 40,200 100,200 Z" onclick="toggleSelect(this)" data-price="15000"></path></svg><div id="price-r" class="price-tag" style="top: 50%; transform: translateY(-50%); left: 0; position: absolute; pointer-events: none; font-size: 9px; font-weight: bold; color: white; z-index: 140; width: 100%; text-align: center;">15000</div></div>
             <div class="grid-container" id="pitch"></div>
@@ -260,10 +220,8 @@
     const grid = document.getElementById('pitch'), overlayContainer = document.getElementById('sponsor-overlays');
     let selectedIds = [];
 
-    // Generování čísel sloupců
     for (let c = 1; c <= 27; c++) document.getElementById('col-labels-top').innerHTML += `<div>${c}</div>`;
     
-    // Generování písmen pro hřiště (B až T, jelikož A je střídačka - proto +65 místo +64)
     for (let r = 1; r <= 19; r++) document.getElementById('row-labels-left').innerHTML += `<div>${String.fromCharCode(65+r)}</div>`;
 
     for (let r = 1; r <= 19; r++) {
@@ -350,44 +308,42 @@
         } else { await sendToCloud(name, email, phone, "", totalPrice); }
     }
 
-   async function sendToCloud(name, email, phone, base64, price) {
-    try {
-        const humanCoords = selectedIds.map(id => convertToHumanCoords(id)).join(", ");
-        await fetch(SCRIPT_URL, { 
-            method: "POST", mode: "no-cors", 
-            body: JSON.stringify({ 
-                action: "add", 
-                data: { id: Date.now(), content: name, email: email, phone: phone, logo: base64, ids: [...selectedIds], humanIds: humanCoords, price: price }
-            })
-        });
+    async function sendToCloud(name, email, phone, base64, price) {
+        try {
+            const humanCoords = selectedIds.map(id => convertToHumanCoords(id)).join(", ");
+            await fetch(SCRIPT_URL, { 
+                method: "POST", mode: "no-cors", 
+                body: JSON.stringify({ 
+                    action: "add", 
+                    data: { id: Date.now(), content: name, email: email, phone: phone, logo: base64, ids: [...selectedIds], humanIds: humanCoords, price: price }
+                })
+            });
 
-        // Zobraz zprávu místo přímého reloadu
-        document.getElementById('loading-overlay').innerHTML = `
-            <div style="text-align: center; padding: 30px; max-width: 420px;">
-                <div style="font-size: 3rem; margin-bottom: 16px;">⚽</div>
-                <div style="font-size: 1.4rem; font-weight: 900; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">
-                    Děkujeme, ${name}!
+            document.getElementById('loading-overlay').innerHTML = `
+                <div style="text-align: center; padding: 30px; max-width: 420px;">
+                    <div style="font-size: 3rem; margin-bottom: 16px;">⚽</div>
+                    <div style="font-size: 1.4rem; font-weight: 900; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">
+                        Děkujeme, ${name}!
+                    </div>
+                    <div style="font-size: 1rem; color: white; line-height: 1.6; margin-bottom: 24px;">
+                        Vaše rezervace byla úspěšně přijata.<br>
+                        Brzy vás budeme kontaktovat s dalšími pokyny k platbě a darovací smlouvě.
+                    </div>
+                    <div style="font-size: 0.85rem; color: #aaa;">Stránka se za chvíli obnoví…</div>
                 </div>
-                <div style="font-size: 1rem; color: white; line-height: 1.6; margin-bottom: 24px;">
-                    Vaše rezervace byla úspěšně přijata.<br>
-                    Brzy vás budeme kontaktovat s dalšími pokyny k platbě a darovací smlouvě.
-                </div>
-                <div style="font-size: 0.85rem; color: #aaa;">Stránka se za chvíli obnoví…</div>
-            </div>
-        `;
+            `;
 
-        setTimeout(() => location.reload(), 4000);
-    } catch (e) { 
-        alert("Chyba při odesílání. Zkuste to prosím znovu."); 
-        document.getElementById('loading-overlay').style.display = 'none'; 
+            setTimeout(() => location.reload(), 4000);
+        } catch (e) { 
+            alert("Chyba při odesílání. Zkuste to prosím znovu."); 
+            document.getElementById('loading-overlay').style.display = 'none'; 
+        }
     }
-}
 
     function renderGroup(g) {
         try {
             const pitchIds = g.ids.filter(id => !id.startsWith('rX'));
             const dugoutIds = g.ids.filter(id => id.startsWith('rX'));
-            console.log("IDs v této skupině:", pitchIds); // ← přidej tento řádek
 
             if (pitchIds.length > 0) {
                 const els = pitchIds.map(id => document.getElementById(id)).filter(e => e); 
@@ -421,39 +377,49 @@
                     const firstEl = els[0];
                     const isArc = firstEl.id.startsWith('arc'); 
 
-                    let isLeftArcAdjacent = false;
-                    let isRightArcAdjacent = false;
+                    let isLeftArcCorner = false;
+                    let isRightArcCorner = false;
+                    let isUnderArcArea = false;
                     
                     if (!isArc) {
-                        isLeftArcAdjacent = els.some(e => e.id === 'comb-r8c6-7' || e.id === 'comb-r12c6-7');
-                        isRightArcAdjacent = els.some(e => e.id === 'comb-r8c21-22' || e.id === 'comb-r12c21-22');
-                    }
-
-                    let svgAlign = "xMidYMid";
-                    let imgAlign = "center";
-                    
-                    if (isLeftArcAdjacent && els.length === 1) {
-                        svgAlign = "xMaxYMid"; 
-                        imgAlign = "right";    
-                    } else if (isRightArcAdjacent && els.length === 1) {
-                        svgAlign = "xMinYMid"; 
-                        imgAlign = "left";     
+                        isLeftArcCorner = els.some(e => e.id === 'comb-r8c6-7' || e.id === 'comb-r12c6-7');
+                        isRightArcCorner = els.some(e => e.id === 'comb-r8c21-22' || e.id === 'comb-r12c21-22');
+                        
+                        isUnderArcArea = els.some(e => {
+                            const m = e.id.match(/r(\d+)c(\d+)/);
+                            if (m) {
+                                const r = parseInt(m[1]), c = parseInt(m[2]);
+                                return (r >= 7 && r <= 13 && (c === 6 || c === 21 || c === 22));
+                            }
+                            return false;
+                        });
                     }
 
                     const lbl = document.createElement('div'); lbl.className = 'sponsor-label';
                     
-                    if (isLeftArcAdjacent || isRightArcAdjacent) {
+                    if (isUnderArcArea) {
                         lbl.style.zIndex = "110";
                     }
                     
+                    // ZDE JE OPRAVA: Pro oblouk vracíme "transparent", abychom nepreekryli jeho obrys.
+                    // Samotný tvar oblouku si teď načte svůj vlastní gradient z SVG!
                     lbl.style.background = isArc ? "transparent" : "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
                     
+                    let isConstrained = (isLeftArcCorner || isRightArcCorner) && els.length === 1;
+                    let innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
+                    
+                    if (isLeftArcCorner && els.length === 1) {
+                        innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
+                    } else if (isRightArcCorner && els.length === 1) {
+                        innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
+                    }
+
+                    let contentHtml = "";
                     if (g.logo && g.logo.startsWith("data:image")) { 
-                        lbl.innerHTML = `<img src="${g.logo}" style="max-width:100%; max-height:100%; object-fit:contain; object-position:${imgAlign}; pointer-events:none;">`;
+                        contentHtml = `<img src="${g.logo}" style="max-width:90%; max-height:90%; object-fit:contain; pointer-events:none;">`;
                     } else { 
                         let tspans = '';
-                        // CHYTRÁ KONTROLA: Pokud je štítek širší než vyšší (nudle), nedáváme slova pod sebe
-                        if ((maxR - minL) > (maxB - minT) * 1.1) {
+                        if ((maxR - minL) > (maxB - minT) * 1.1 && !isConstrained) {
                             tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
                         } else {
                             const words = g.content.trim().split(/\s+/);
@@ -462,8 +428,8 @@
                             });
                         }
                         
-                        lbl.innerHTML = `
-                            <svg width="100%" height="100%" preserveAspectRatio="${svgAlign} meet" style="overflow:visible;">
+                        contentHtml = `
+                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:visible;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
                                     ${tspans}
                                 </text>
@@ -471,32 +437,31 @@
                         `;
                     }
                     
-                         // Mapa spojených čtverců kolem středového kruhu → řádek pro zobrazení labelu
-                        const centerOverrideMap = {
-                            'comb-r8c12-13':  8,   // I8  - nad kruhem, zobraz v řádku 8
-                            'comb-r12c12-13': 12,  // I13 - pod kruhem, zobraz v řádku 12
-                            'comb-r8c15-16':  8,
-                            'comb-r12c15-16': 12,
-                        };
-                            console.log("els[0].id:", els[0]?.id);
-                            console.log("overrideRow:", centerOverrideMap[els[0]?.id]);
-                        const overrideRow = els.length === 1 && centerOverrideMap[els[0].id] !== undefined
-                            ? centerOverrideMap[els[0].id]
-                            : null;
-                        
-                        if (overrideRow !== null) {
-                            const rowTop = (overrideRow - 1) * (100 / 19);
-                            const rowBot = overrideRow * (100 / 19);
-                            lbl.style.top = rowTop + "%";
-                            lbl.style.left = minL + "%";
-                            lbl.style.width = (maxR - minL) + "%";
-                            lbl.style.height = (rowBot - rowTop) + "%";
-                        } else {
-                            lbl.style.top = minT + "%";
-                            lbl.style.left = minL + "%";
-                            lbl.style.width = (maxR - minL) + "%";
-                            lbl.style.height = (maxB - minT) + "%";
-                        }
+                    lbl.innerHTML = `<div style="${innerStyle}">${contentHtml}</div>`;
+
+                    const centerOverrideMap = {
+                        'comb-r8c12-13':  8,   
+                        'comb-r12c12-13': 12,  
+                        'comb-r8c15-16':  8,
+                        'comb-r12c15-16': 12,
+                    };
+                    const overrideRow = els.length === 1 && centerOverrideMap[els[0].id] !== undefined
+                        ? centerOverrideMap[els[0].id]
+                        : null;
+                    
+                    if (overrideRow !== null) {
+                        const rowTop = (overrideRow - 1) * (100 / 19);
+                        const rowBot = overrideRow * (100 / 19);
+                        lbl.style.top = rowTop + "%";
+                        lbl.style.left = minL + "%";
+                        lbl.style.width = (maxR - minL) + "%";
+                        lbl.style.height = (rowBot - rowTop) + "%";
+                    } else {
+                        lbl.style.top = minT + "%";
+                        lbl.style.left = minL + "%";
+                        lbl.style.width = (maxR - minL) + "%";
+                        lbl.style.height = (maxB - minT) + "%";
+                    }
                     
                     overlayContainer.appendChild(lbl);
 
@@ -531,7 +496,6 @@
                         lbl.innerHTML = `<img src="${g.logo}" style="max-width:100%; max-height:100%; object-fit:contain; pointer-events:none;">`;
                     } else { 
                         let tspans = '';
-                        // Kontrola pro střídačky, pokud se koupí více míst vedle sebe
                         if (((c2 - c1 + 1) * (100 / 27)) > (100 / 19) * 1.1) {
                             tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
                         } else {
@@ -597,7 +561,8 @@
                         const el = document.getElementById(id); 
                         if(el) { 
                             if (id.startsWith('arc')) {
-                                el.style.fill = "var(--center-dark-green)";
+                                // ZDE JE ZMĚNA: Tvar oblouku je teď vyplněn SVG gradientem definovaným v HTML výše.
+                                el.style.fill = "url(#sold-arc-gradient)";
                                 el.style.pointerEvents = "none"; 
                                 if(id === 'arc-merged-l') document.getElementById('price-l').style.visibility = 'hidden'; 
                                 if(id === 'arc-merged-r') document.getElementById('price-r').style.visibility = 'hidden'; 
