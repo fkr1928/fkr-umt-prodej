@@ -79,7 +79,7 @@
         .square { border: 0.1px solid rgba(255,255,255,0.08); position: relative; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; cursor: pointer; box-sizing: border-box; }
         .price-tag { position: relative; z-index: 20; padding: 2px 4px; border-radius: 2px; text-shadow: 1px 1px 7px rgba(0,0,0,0.8); pointer-events: none; }
         
-.half-sq-hor { 
+        .half-sq-hor { 
             display: grid; 
             place-items: center; 
             width: 100%; 
@@ -88,11 +88,11 @@
             cursor: pointer;
         }
 
-       .half-sq-hor:last-child { 
-    border-bottom: none; 
-}
+        .half-sq-hor:last-child { 
+            border-bottom: none; 
+        }
 
-.combined-cell { grid-column: span 2; background-color: var(--center-dark-green) !important; z-index: 30; display: flex; align-items: center; justify-content: center; position: relative; }
+        .combined-cell { grid-column: span 2; background-color: var(--center-dark-green) !important; z-index: 30; display: flex; align-items: center; justify-content: center; position: relative; }
         .align-left { justify-content: flex-start !important; padding-left: 5px; }
         .align-right { justify-content: flex-end !important; padding-right: 5px; }
 
@@ -156,7 +156,7 @@
 <div class="how-it-works">
     <div class="how-it-works-title">Jak se stát legendou? Je to jednoduché:</div>
     <p><strong>Hrací plocha:</strong> Hřiště jsme rozdělili na čtverce s různými hodnotami. Každý z nich čeká na svého majitele.</p>
-    <p><strong>Střídání:</strong> Jakmile si čtverec zarezervujete a zaplatíte, stává se vaším „územím“. Nikdo jiný už ho neobsadí.</p>
+    <p><strong>Střídání:</strong> Jakmile si čtverec zarezervujete a zaplatíte, stává se vaším „územím". Nikdo jiný už ho neobsadí.</p>
     <p><strong>Týmová práce:</strong> Můžete si koupit jeden čtverec, nebo celou řadu. Spojte se jako rodina, firma nebo parta kamarádů!</p>
     <p><strong>Výsledek zápasu:</strong> Každá koruna jde přímo na podporu financování a vybudování nového sportovního hřiště s umělým povrchem v areálu FK Řeporyje. S každým dárcem bude sepsána darovací smlouva.</p>
     <div class="how-it-works-link"><a href="https://www.fkreporyje.cz/cs/p/306-legenda-v-kazdem-ctverci" target="_blank">Více informací ZDE.</a></div>
@@ -258,13 +258,11 @@
             else if ((r === 1 || r === 19) && (c === 1 || c === 27)) { sq.classList.add('orange-premium-color'); sq.dataset.price = 5000; sq.innerHTML = `<span class="price-tag">5000</span>`; sq.onclick = () => toggleSelect(sq); }
             else if (isSplitRow) {
                 const container = document.createElement('div'); 
-                // Zásadní krok: Absolutní pozice, aby vnitřek neroztáhl rodičovský .square
                 container.style.position = "absolute";
                 container.style.top = "0";
                 container.style.left = "0";
                 container.style.width = "100%"; 
                 container.style.height = "100%";
-                // Kontejner je grid rozdělující výšku na přesné poloviny
                 container.style.display = "grid"; 
                 container.style.gridTemplateRows = "1fr 1fr";
                 
@@ -275,7 +273,6 @@
                     half.dataset.price = 1000; 
                     half.innerHTML = `<span class="price-tag">1000</span>`; 
                     
-                    // Oddělující linku vložíme jen pro horní (T) blok
                     if (side === 'T') {
                         half.style.borderBottom = "0.1px solid rgba(255,255,255,0.08)";
                     }
@@ -438,25 +435,33 @@
                         lbl.style.zIndex = "110";
                     }
                     
-                    // ZDE JE OPRAVA: Pro oblouk vracíme "transparent", abychom nepreekryli jeho obrys.
-                    // Samotný tvar oblouku si teď načte svůj vlastní gradient z SVG!
                     lbl.style.background = isArc ? "transparent" : "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
-                    
-                    let isConstrained = (isLeftArcCorner || isRightArcCorner) && els.length === 1;
-                    let innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
-                    
+
+                    // --- Určení šířky labelu ---
+                    // Speciální pravidlo: skupina r8c11 + comb-r8c12-13 → background přes 3 sloupce, label jen přes první 2
+                    const hasR8C11     = els.some(e => e.id === 'r8c11');
+                    const hasCombR8C12 = els.some(e => e.id === 'comb-r8c12-13');
+                    const labelWidthFraction = (hasR8C11 && hasCombR8C12) ? 2/3 : 1;
+
+                    // --- innerStyle ---
+                    let innerStyle;
                     if (isLeftArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
                     } else if (isRightArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
-                    }
+                    } else if (hasR8C11 && hasCombR8C12) {
+    // Label přes první 2 sloupce (I11 + I12), background přes všechny 3
+    innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
+} else {
+    innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
+}
 
                     let contentHtml = "";
                     if (g.logo && g.logo.startsWith("data:image")) { 
                         contentHtml = `<img src="${g.logo}" style="max-width:90%; max-height:90%; object-fit:contain; pointer-events:none;">`;
                     } else { 
                         let tspans = '';
-                        if ((maxR - minL) > (maxB - minT) * 1.1 && !isConstrained) {
+                        if ((maxR - minL) > (maxB - minT) * 1.1 && labelWidthFraction === 1) {
                             tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
                         } else {
                             const words = g.content.trim().split(/\s+/);
@@ -466,7 +471,7 @@
                         }
                         
                         contentHtml = `
-                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:visible;">
+                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:visible; max-width: ${labelWidthFraction * 100}%;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
                                     ${tspans}
                                 </text>
@@ -598,7 +603,6 @@
                         const el = document.getElementById(id); 
                         if(el) { 
                             if (id.startsWith('arc')) {
-                                // ZDE JE ZMĚNA: Tvar oblouku je teď vyplněn SVG gradientem definovaným v HTML výše.
                                 el.style.fill = "url(#sold-arc-gradient)";
                                 el.style.pointerEvents = "none"; 
                                 if(id === 'arc-merged-l') document.getElementById('price-l').style.visibility = 'hidden'; 
