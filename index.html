@@ -450,11 +450,14 @@
                     } else if (isRightArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
                     } else if (hasR8C11 && hasCombR8C12) {
-    // Label přes první 2 sloupce (I11 + I12), background přes všechny 3
-    innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
-} else {
-    innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
-}
+                        // Label přes první 2 sloupce (I11 + I12), background přes všechny 3
+                        innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
+                    } else if (els.some(e => e.id === 'comb-r12c15-16')) {
+                        // Přidán padding-left: 30px pro M15-16
+                        innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; padding-left: 30px; box-sizing: border-box;";
+                    } else {
+                        innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
+                    }
 
                     let contentHtml = "";
                     if (g.logo && g.logo.startsWith("data:image")) { 
