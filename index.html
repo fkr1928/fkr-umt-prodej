@@ -115,7 +115,8 @@
         .arc-interactive-path { fill: var(--large-box-blue); stroke: var(--line-white); stroke-width: 3; cursor: pointer; transition: fill 0.2s; }
         .arc-interactive-path.selected { fill: var(--selected-yellow) !important; }
 
-        .sponsor-label { padding: 2px; background-origin: content-box; box-sizing: border-box; position: absolute; display: flex; align-items: center; justify-content: center; z-index: 400; cursor: default !important; text-align: center; border: none; pointer-events: auto !important; }
+        /* ZMĚNA ZDE: Posunuli jsme z-index z 400 na 5, aby se štítek schoval pod hrací plochu */
+        .sponsor-label { padding: 2px; background-origin: content-box; box-sizing: border-box; position: absolute; display: flex; align-items: center; justify-content: center; z-index: 5; cursor: default !important; text-align: center; border: none; pointer-events: auto !important; }
 
         .dugout-grid { display: grid; grid-template-columns: repeat(27, 1fr); height: 100%; width: 100%; position: absolute; top: 0; left: 0; z-index: 10; }
         .dugout-title { position: absolute; top: -18px; font-size: 11px; font-weight: 900; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; pointer-events: none; }
@@ -200,7 +201,7 @@
             <div class="dugout-title away">Domácí</div>
             <div class="dugout-title home">Hosté</div>
             <div class="dugout-grid" id="dugout-grid"></div>
-            <div id="dugout-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200;"></div>
+            <div id="dugout-overlays" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
         </div>
         
         <div id="row-labels-left" class="row-labels-left"></div>
@@ -413,32 +414,23 @@
 
                     let isLeftArcCorner = false;
                     let isRightArcCorner = false;
-                    let isUnderArcArea = false;
                     
                     if (!isArc) {
                         isLeftArcCorner = els.some(e => e.id === 'comb-r8c6-7' || e.id === 'comb-r12c6-7');
                         isRightArcCorner = els.some(e => e.id === 'comb-r8c21-22' || e.id === 'comb-r12c21-22');
-                        
-                        isUnderArcArea = els.some(e => {
-                            const m = e.id.match(/r(\d+)c(\d+)/);
-                            if (m) {
-                                const r = parseInt(m[1]), c = parseInt(m[2]);
-                                return (r >= 7 && r <= 13 && (c === 6 || c === 21 || c === 22));
-                            }
-                            return false;
-                        });
                     }
 
                     const lbl = document.createElement('div'); lbl.className = 'sponsor-label';
                     
-                    if (isUnderArcArea) {
-                        lbl.style.zIndex = "110";
+                    // ZMĚNA ZDE: Vyhodili jsme starou pojistku pro D-oblouk (isUnderArcArea) 
+                    // a místo toho nastavíme vysoký z-index jen pokud je prodaný samotný oblouk.
+                    if (isArc) {
+                        lbl.style.zIndex = "130"; 
                     }
                     
                     lbl.style.background = isArc ? "transparent" : "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
 
                     // --- Určení šířky labelu ---
-                    // Speciální pravidlo: skupina r8c11 + comb-r8c12-13 → background přes 3 sloupce, label jen přes první 2
                     const hasR8C11     = els.some(e => e.id === 'r8c11');
                     const hasCombR8C12 = els.some(e => e.id === 'comb-r8c12-13');
                     const labelWidthFraction = (hasR8C11 && hasCombR8C12) ? 2/3 : 1;
