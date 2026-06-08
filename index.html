@@ -115,8 +115,7 @@
         .arc-interactive-path { fill: var(--large-box-blue); stroke: var(--line-white); stroke-width: 3; cursor: pointer; transition: fill 0.2s; }
         .arc-interactive-path.selected { fill: var(--selected-yellow) !important; }
 
-        /* ZMĚNA ZDE: Posunuli jsme z-index z 400 na 5, aby se štítek schoval pod hrací plochu */
-        .sponsor-label { padding: 2px; background-origin: content-box; box-sizing: border-box; position: absolute; display: flex; align-items: center; justify-content: center; z-index: 5; cursor: default !important; text-align: center; border: none; pointer-events: auto !important; }
+        .sponsor-label { padding: 2px; background-origin: content-box; box-sizing: border-box; position: absolute; display: flex; align-items: center; justify-content: center; z-index: 5; cursor: default !important; text-align: center; border: none; pointer-events: auto !important; overflow: hidden; }
 
         .dugout-grid { display: grid; grid-template-columns: repeat(27, 1fr); height: 100%; width: 100%; position: absolute; top: 0; left: 0; z-index: 10; }
         .dugout-title { position: absolute; top: -18px; font-size: 11px; font-weight: 900; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; pointer-events: none; }
@@ -207,7 +206,7 @@
         <div id="row-labels-left" class="row-labels-left"></div>
         <div class="pitch-wrapper">
             <svg width="0" height="0" style="position: absolute;" aria-hidden="true">
-                <defs>
+                <defs id="global-defs">
                     <linearGradient id="sold-arc-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stop-color="var(--center-dark-green)" />
                         <stop offset="100%" stop-color="var(--pitch-green)" />
@@ -385,6 +384,8 @@
                 if(els.length) {
                     
                     let minT = 100, maxB = 0, minL = 100, maxR = 0;
+                    const cellBounds = []; // Pro uložení přesných pozic koupených políček
+                    
                     els.forEach(el => {
                         let r, c, w=1, h=1; 
                         const parts = el.id.split('_');
@@ -407,6 +408,8 @@
                         if (bF > maxB) maxB = bF;
                         if (lF < minL) minL = lF;
                         if (rF > maxR) maxR = rF;
+                        
+                        cellBounds.push({lF, rF, tF, bF});
                     });
                     
                     const firstEl = els[0];
@@ -422,30 +425,56 @@
 
                     const lbl = document.createElement('div'); lbl.className = 'sponsor-label';
                     
-                    // ZMĚNA ZDE: Vyhodili jsme starou pojistku pro D-oblouk (isUnderArcArea) 
-                    // a místo toho nastavíme vysoký z-index jen pokud je prodaný samotný oblouk.
                     if (isArc) {
                         lbl.style.zIndex = "130"; 
+                        lbl.style.background = "transparent";
+                    } else {
+                        lbl.style.background = "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
+                        
+                        // ZDE SE TVOŘÍ PŘESNÁ MASKA (Zabrání to přetečení do cizích buněk)
+                        const clipId = 'clip-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+                        const svgNS = "http://www.w3.org/2000/svg";
+                        const clipPath = document.createElementNS(svgNS, "clipPath");
+                        clipPath.setAttribute("id", clipId);
+                        clipPath.setAttribute("clipPathUnits", "objectBoundingBox");
+                        
+                        const wP = maxR - minL;
+                        const hP = maxB - minT;
+                        
+                        cellBounds.forEach(b => {
+                            const rect = document.createElementNS(svgNS, "rect");
+                            let relX = (b.lF - minL) / wP;
+                            let relY = (b.tF - minT) / hP;
+                            let relW = (b.rF - b.lF) / wP;
+                            let relH = (b.bF - b.tF) / hP;
+                            
+                            // + 0.002 překryv, aby nevznikaly mikro-mezery
+                            rect.setAttribute("x", relX - 0.001);
+                            rect.setAttribute("y", relY - 0.001);
+                            rect.setAttribute("width", relW + 0.002);
+                            rect.setAttribute("height", relH + 0.002);
+                            clipPath.appendChild(rect);
+                        });
+                        
+                        const defs = document.getElementById('global-defs');
+                        if (defs) defs.appendChild(clipPath);
+                        
+                        lbl.style.clipPath = `url(#${clipId})`;
+                        lbl.style.webkitClipPath = `url(#${clipId})`;
                     }
-                    
-                    lbl.style.background = isArc ? "transparent" : "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
 
-                    // --- Určení šířky labelu ---
                     const hasR8C11     = els.some(e => e.id === 'r8c11');
                     const hasCombR8C12 = els.some(e => e.id === 'comb-r8c12-13');
                     const labelWidthFraction = (hasR8C11 && hasCombR8C12) ? 2/3 : 1;
 
-                    // --- innerStyle ---
                     let innerStyle;
                     if (isLeftArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
                     } else if (isRightArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
                     } else if (hasR8C11 && hasCombR8C12) {
-                        // Label přes první 2 sloupce (I11 + I12), background přes všechny 3
                         innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
                     } else if (els.some(e => e.id === 'comb-r12c15-16')) {
-                        // Přidán padding-left: 30px pro M15-16
                         innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; padding-left: 30px; box-sizing: border-box;";
                     } else {
                         innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
@@ -466,7 +495,7 @@
                         }
                         
                         contentHtml = `
-                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:visible; max-width: ${labelWidthFraction * 100}%;">
+                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden; max-width: ${labelWidthFraction * 100}%;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
                                     ${tspans}
                                 </text>
@@ -543,7 +572,7 @@
                         }
                         
                         lbl.innerHTML = `
-                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:visible;">
+                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="20">
                                     ${tspans}
                                 </text>
@@ -604,6 +633,11 @@
                                 if(id === 'arc-merged-r') document.getElementById('price-r').style.visibility = 'hidden'; 
                             } else {
                                 el.style.visibility = 'hidden'; 
+                                el.style.border = 'none'; 
+                                if (el.classList.contains('half-sq-hor')) {
+                                    const parentSq = el.closest('.square');
+                                    if (parentSq) parentSq.style.border = 'none';
+                                }
                             }
                         }
                     });
