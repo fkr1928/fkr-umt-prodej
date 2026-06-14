@@ -470,6 +470,9 @@
                     // Detekce, zda nákup obsahuje pole napravo od středového kruhu
                     const isRightCenterBody = els.some(e => ['comb-r9c16-17', 'comb-r10c16-17', 'comb-r11c16-17'].includes(e.id));
 
+                    // I15-17: kombinované pole I15 je z poloviny pod kruhem -> label jen přes I16-17 (pravé 2/3)
+                    const isI15to17 = els.some(e => e.id === 'comb-r8c15-16') && els.some(e => e.id === 'r8c17');
+
                     let innerStyle;
                     if (isLeftArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
@@ -477,6 +480,8 @@
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
                     } else if (hasR8C11 && hasCombR8C12) {
                         innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
+                    } else if (isI15to17) {
+                        innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
                     } else if (els.some(e => e.id === 'comb-r12c15-16')) {
                         innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; padding-left: 30px; box-sizing: border-box;";
                     } else if (isRightCenterBody) {
