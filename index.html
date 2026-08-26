@@ -384,7 +384,7 @@
                 if(els.length) {
                     
                     let minT = 100, maxB = 0, minL = 100, maxR = 0;
-                    const cellBounds = []; // Pro uložení přesných pozic koupených políček
+                    const cellBounds = []; 
                     
                     els.forEach(el => {
                         let r, c, w=1, h=1; 
@@ -431,7 +431,6 @@
                     } else {
                         lbl.style.background = "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
                         
-                        // ZDE SE TVOŘÍ PŘESNÁ MASKA (Zabrání to přetečení do cizích buněk)
                         const clipId = 'clip-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
                         const svgNS = "http://www.w3.org/2000/svg";
                         const clipPath = document.createElementNS(svgNS, "clipPath");
@@ -448,7 +447,6 @@
                             let relW = (b.rF - b.lF) / wP;
                             let relH = (b.bF - b.tF) / hP;
                             
-                            // + 0.002 překryv, aby nevznikaly mikro-mezery
                             rect.setAttribute("x", relX - 0.001);
                             rect.setAttribute("y", relY - 0.001);
                             rect.setAttribute("width", relW + 0.002);
@@ -463,32 +461,24 @@
                         lbl.style.webkitClipPath = `url(#${clipId})`;
                     }
 
-                    const hasR8C11     = els.some(e => e.id === 'r8c11');
-                    const hasCombR8C12 = els.some(e => e.id === 'comb-r8c12-13');
-                    const labelWidthFraction = (hasR8C11 && hasCombR8C12) ? 2/3 : 1;
+                    const CIRCLE_L = 42.68;
+                    const CIRCLE_R = 57.32;
+                    const CIRCLE_T = 37.00;
+                    const CIRCLE_B = 63.00;
+                    const intersectsCircleY = (maxB > CIRCLE_T && minT < CIRCLE_B);
                     
-                    // Detekce, zda nákup obsahuje pole napravo od středového kruhu
-                    const isRightCenterBody = els.some(e => ['comb-r9c16-17', 'comb-r10c16-17', 'comb-r11c16-17'].includes(e.id));
-
-                    // I15-17: kombinované pole I15 je z poloviny pod kruhem -> label jen přes I16-17 (pravé 2/3)
-                    const isI15to17 = els.some(e => e.id === 'comb-r8c15-16') && els.some(e => e.id === 'r8c17');
-
-                    let innerStyle;
+                    let innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
+                    
                     if (isLeftArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
                     } else if (isRightArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
-                    } else if (hasR8C11 && hasCombR8C12) {
-                        innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
-                    } else if (isI15to17) {
-                        innerStyle = "width: 66.666%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
-                    } else if (els.some(e => e.id === 'comb-r12c15-16')) {
-                        innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; padding-left: 30px; box-sizing: border-box;";
-                    } else if (isRightCenterBody) {
-                        // Přidáno padding-left: 35px, aby se obsah odtlačil od kruhu
-                        innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; padding-left: 20px; box-sizing: border-box;";
-                    } else {
-                        innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
+                    } else if (intersectsCircleY && minL < CIRCLE_L && maxR > CIRCLE_L && maxR <= (CIRCLE_R + 5)) {
+                        let visiblePct = ((CIRCLE_L - minL) / (maxR - minL)) * 100;
+                        innerStyle = `width: ${visiblePct}%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;`;
+                    } else if (intersectsCircleY && maxR > CIRCLE_R && minL < CIRCLE_R && minL >= (CIRCLE_L - 5)) {
+                        let visiblePct = ((maxR - CIRCLE_R) / (maxR - minL)) * 100;
+                        innerStyle = `width: ${visiblePct}%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;`;
                     }
 
                     let contentHtml = "";
@@ -496,7 +486,7 @@
                         contentHtml = `<img src="${g.logo}" style="max-width:90%; max-height:90%; object-fit:contain; pointer-events:none;">`;
                     } else { 
                         let tspans = '';
-                        if ((maxR - minL) > (maxB - minT) * 1.1 && labelWidthFraction === 1) {
+                        if ((maxR - minL) > (maxB - minT) * 1.1) {
                             tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
                         } else {
                             const words = g.content.trim().split(/\s+/);
@@ -506,7 +496,7 @@
                         }
                         
                         contentHtml = `
-                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden; max-width: ${labelWidthFraction * 100}%;">
+                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden;">
                                 <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
                                     ${tspans}
                                 </text>
@@ -546,11 +536,13 @@
                         try {
                             const svg = lbl.querySelector('svg');
                             const text = svg.querySelector('text');
-                            const bbox = text.getBBox();
-                            if (bbox.width > 0 && bbox.height > 0) {
-                                const padX = bbox.width * 0.01; 
-                                const padY = bbox.height * 0.01;
-                                svg.setAttribute('viewBox', `${bbox.x - padX} ${bbox.y - padY} ${bbox.width + padX*2} ${bbox.height + padY*2}`);
+                            if (svg && text) {
+                                const bbox = text.getBBox();
+                                if (bbox.width > 0 && bbox.height > 0) {
+                                    const padX = bbox.width * 0.02; 
+                                    const padY = bbox.height * 0.02;
+                                    svg.setAttribute('viewBox', `${bbox.x - padX} ${bbox.y - padY} ${bbox.width + padX*2} ${bbox.height + padY*2}`);
+                                }
                             }
                         } catch (e) {}
                     }
@@ -566,45 +558,28 @@
                         if(c < c1) c1 = c; if(c > c2) c2 = c;
                     });
                     const lbl = document.createElement('div'); lbl.className = 'sponsor-label';
-                    
                     lbl.style.background = "linear-gradient(135deg, var(--center-dark-green) 0%, var(--pitch-green) 100%)";
                     
                     if (g.logo && g.logo.startsWith("data:image")) { 
                         lbl.innerHTML = `<img src="${g.logo}" style="max-width:100%; max-height:100%; object-fit:contain; pointer-events:none;">`;
                     } else { 
-                        let tspans = '';
-                        if (((c2 - c1 + 1) * (100 / 27)) > (100 / 19) * 1.1) {
-                            tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
-                        } else {
-                            const words = g.content.trim().split(/\s+/);
-                            words.forEach((w, i) => {
-                                tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
-                            });
-                        }
-                        
-                        lbl.innerHTML = `
-                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden;">
-                                <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="20">
-                                    ${tspans}
-                                </text>
-                            </svg>
-                        `;
+                        lbl.innerHTML = `<svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet"><text text-anchor="middle" dominant-baseline="middle" fill="white" font-size="20">${g.content.trim()}</text></svg>`;
                     }
-                    
                     lbl.style.top = "0%"; lbl.style.left = ((c1-1)*(100/27))+"%";
                     lbl.style.width = ((c2-c1+1)*(100/27))+"%"; lbl.style.height = "100%";
-                    
                     document.getElementById('dugout-overlays').appendChild(lbl);
 
                     if (!g.logo || !g.logo.startsWith("data:image")) {
                         try {
                             const svg = lbl.querySelector('svg');
                             const text = svg.querySelector('text');
-                            const bbox = text.getBBox();
-                            if (bbox.width > 0 && bbox.height > 0) {
-                                const padX = bbox.width * 0.01; 
-                                const padY = bbox.height * 0.01;
-                                svg.setAttribute('viewBox', `${bbox.x - padX} ${bbox.y - padY} ${bbox.width + padX*2} ${bbox.height + padY*2}`);
+                            if (svg && text) {
+                                const bbox = text.getBBox();
+                                if (bbox.width > 0 && bbox.height > 0) {
+                                    const padX = bbox.width * 0.02; 
+                                    const padY = bbox.height * 0.02;
+                                    svg.setAttribute('viewBox', `${bbox.x - padX} ${bbox.y - padY} ${bbox.width + padX*2} ${bbox.height + padY*2}`);
+                                }
                             }
                         } catch (e) {}
                     }
