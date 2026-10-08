@@ -461,47 +461,62 @@
                         lbl.style.webkitClipPath = `url(#${clipId})`;
                     }
 
-                    const CIRCLE_L = 42.68;
-                    const CIRCLE_R = 57.32;
-                    const CIRCLE_T = 37.00;
-                    const CIRCLE_B = 63.00;
-                    const intersectsCircleY = (maxB > CIRCLE_T && minT < CIRCLE_B);
-                    
                     let innerStyle = "width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;";
                     
                     if (isLeftArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;";
                     } else if (isRightArcCorner && els.length === 1) {
                         innerStyle = "width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;";
-                    } else if (intersectsCircleY && minL < CIRCLE_L && maxR > CIRCLE_L && maxR <= (CIRCLE_R + 5)) {
-                        let visiblePct = ((CIRCLE_L - minL) / (maxR - minL)) * 100;
-                        innerStyle = `width: ${visiblePct}%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; left: 0; top: 0;`;
-                    } else if (intersectsCircleY && maxR > CIRCLE_R && minL < CIRCLE_R && minL >= (CIRCLE_L - 5)) {
-                        let visiblePct = ((maxR - CIRCLE_R) / (maxR - minL)) * 100;
-                        innerStyle = `width: ${visiblePct}%; height: 100%; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; top: 0;`;
                     }
+
+                    // Logika pro detekci svislé "nudle" (výška je výrazně větší než šířka)
+                    let pixelWidth = ((maxR - minL) / 100) * 1100;
+                    let pixelHeight = ((maxB - minT) / 100) * 620;
+                    let isVerticalBox = pixelHeight > (pixelWidth * 1.5);
 
                     let contentHtml = "";
                     if (g.logo && g.logo.startsWith("data:image")) { 
-                        contentHtml = `<img src="${g.logo}" style="max-width:90%; max-height:90%; object-fit:contain; pointer-events:none;">`;
+                        if (isVerticalBox) {
+                            // Pro vertikální pole otočíme logo v naprosto přesném absolutním kontejneru 
+                            contentHtml = `
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-90deg); width: ${pixelHeight}px; height: ${pixelWidth}px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="${g.logo}" style="max-width:90%; max-height:90%; object-fit:contain; pointer-events:none;">
+                                </div>
+                            `;
+                        } else {
+                            contentHtml = `<img src="${g.logo}" style="max-width:90%; max-height:90%; object-fit:contain; pointer-events:none;">`;
+                        }
                     } else { 
                         let tspans = '';
-                        if ((maxR - minL) > (maxB - minT) * 1.1) {
+                        if (isVerticalBox) {
                             tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
+                            contentHtml = `
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-90deg); width: ${pixelHeight}px; height: ${pixelWidth}px; display: flex; align-items: center; justify-content: center;">
+                                    <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden;">
+                                        <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
+                                            ${tspans}
+                                        </text>
+                                    </svg>
+                                </div>
+                            `;
                         } else {
-                            const words = g.content.trim().split(/\s+/);
-                            words.forEach((w, i) => {
-                                tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
-                            });
+                            if ((maxR - minL) > (maxB - minT) * 1.1) {
+                                tspans = `<tspan x="0" dy="0">${g.content.trim()}</tspan>`;
+                            } else {
+                                const words = g.content.trim().split(/\s+/);
+                                words.forEach((w, i) => {
+                                    tspans += `<tspan x="0" dy="${i === 0 ? 0 : 1.1}em">${w}</tspan>`;
+                                });
+                            }
+                            
+                            contentHtml = `
+                                <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden;">
+                                    <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
+                                        ${tspans}
+                                    </text>
+                                </svg>
+                            `;
                         }
-                        
-                        contentHtml = `
-                            <svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="overflow:hidden;">
-                                <text text-anchor="middle" dominant-baseline="middle" fill="white" font-weight="400" font-family="'Segoe UI', Arial, sans-serif" font-size="25">
-                                    ${tspans}
-                                </text>
-                            </svg>
-                        `;
                     }
                     
                     lbl.innerHTML = `<div style="${innerStyle}">${contentHtml}</div>`;
